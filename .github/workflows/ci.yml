@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [ "main", "v0.3.0-feature-guard" ]
+    branches: [ "main", "v0.3.0-feature-guard", "fix/**" ]
   pull_request:
     branches: [ "main", "v0.3.0-feature-guard" ]
 
