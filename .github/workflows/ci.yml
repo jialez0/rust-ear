@@ -2,9 +2,9 @@ name: ci
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "v0.3.0-feature-guard" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "v0.3.0-feature-guard" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,6 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@1.88.0
+      with:
+        components: clippy, rustfmt
+        targets: wasm32-unknown-unknown
     - name: Formatting checks
       run: cargo fmt --all -- --check
     - name: Clippy checks
@@ -24,6 +28,14 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+    - name: JWT-only tests
+      run: cargo test --no-default-features --features jwt
+    - name: Core-only tests
+      run: cargo test --no-default-features
+    - name: Wasm library checks
+      run: |
+        cargo check --lib --target wasm32-unknown-unknown --no-default-features
+        cargo check --lib --target wasm32-unknown-unknown --no-default-features --features jwt
 
 # Recommended pipeline if using advisories, to avoid sudden breakages
 # From: https://github.com/EmbarkStudios/cargo-deny-action

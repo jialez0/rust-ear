@@ -15,7 +15,7 @@ base64 = "0.22.1"
 ciborium = "0.2.0"
 cose-rust = {version = "0.1.2", optional = true}
 hex = "0.4.3"
-jsonwebtoken = {version = "9", optional = true}
+jsonwebtoken = {version = "10.3.0", default-features = false, features = ["rust_crypto", "use_pem"], optional = true}
 lazy_static = "1.5.0"
 openssl = {version = "0.10.54", optional = true}
 phf = {version = "0.11.1", features = ["macros", "serde"]}
@@ -27,5 +27,7 @@ thiserror = "1.0.40"
 [features]
 default = ["cose", "jwt"]
 cose = ["dep:cose-rust", "dep:openssl", "dep:jsonwebtoken"]
-jwt = ["dep:jsonwebtoken"]
+jwt = ["dep:jsonwebtoken", "dep:getrandom"]
 
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.2", features = ["js"], optional = true }
